@@ -1,0 +1,1 @@
+java $JAVA_REMOTE_DEBUG -jar $JAR_NAME
