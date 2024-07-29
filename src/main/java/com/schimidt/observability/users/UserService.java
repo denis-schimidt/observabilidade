@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+@Observed(contextualName = "user-service")
 @RequiredArgsConstructor
 @Service
 class UserService {
 
     private final UserRepository userRepository;
 
-    @Observed(name = "user-service.create", contextualName = "creating-new-user")
     public User create(User user) {
         return userRepository.save(user);
     }

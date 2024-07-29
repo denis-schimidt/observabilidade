@@ -1,9 +1,11 @@
 package com.schimidt.observability.login;
 
 import com.schimidt.observability.security.PasswordEncryptor;
+import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+@Observed(contextualName = "login-service")
 @RequiredArgsConstructor
 @Service
 class LoginService {
