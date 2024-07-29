@@ -18,7 +18,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
   "links": [],
   "panels": [
     {
@@ -119,7 +118,9 @@
   ],
   "refresh": "5s",
   "schemaVersion": 39,
-  "tags": [],
+  "tags": [
+    "users-api"
+  ],
   "templating": {
     "list": []
   },
@@ -131,6 +132,6 @@
   "timezone": "browser",
   "title": "Users API",
   "uid": "edt4rv3rsuuwwa",
-  "version": 2,
+  "version": 1,
   "weekStart": ""
 }

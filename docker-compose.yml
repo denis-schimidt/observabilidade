@@ -12,6 +12,21 @@ services:
       - DOCKER_CONTAINER_IMAGE=${DOCKER_CONTAINER_IMAGE:-schimidt/observability:latest}
     networks:
       - monitoring
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=observability
+      - DB_HOST=postgres
+    networks:
+      - monitoring
 
   prometheus:
     image: prom/prometheus:latest
@@ -23,6 +38,19 @@ services:
       - ./monitoring/prometheus/rules/rules-for-alert-manager.yml:/etc/prometheus/rules-for-alert-manager.yml
     depends_on:
       - app
+    networks:
+      - monitoring
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter
+    container_name: postgres-exporter
+    ports:
+      - 9187:9187
+    environment:
+      DATA_SOURCE_NAME: "postgresql://admin:admin@postgres:5432/observability?sslmode=disable"
+    depends_on:
+      - postgres
+      - prometheus
     networks:
       - monitoring
 
@@ -44,10 +72,17 @@ services:
     ports:
       - "16686:16686" # the jaeger UI port
       - "4317:4317" # the open telemetry grpc port for sending traces
+      - "5775:5775"
+      - "5778:5778"
+      - "14250:14250"
+      - "14267:14267"
+      - "14268:14268"
+      - "8888:8888"
     environment:
       - COLLECTOR_OTLP_ENABLED=true
       - LOG_LEVEL=debug
       - OTEL_TRACES_SAMPLER=always_off
+      - OTEL_EXPORTER=jaeger
     networks:
       - monitoring
 
