@@ -10,6 +10,8 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - DOCKER_CONTAINER_IMAGE=${DOCKER_CONTAINER_IMAGE:-schimidt/observability:latest}
+    networks:
+      - monitoring
 
   prometheus:
     image: prom/prometheus:latest
@@ -21,6 +23,8 @@ services:
       - ./monitoring/prometheus/rules/rules-for-alert-manager.yml:/etc/prometheus/rules-for-alert-manager.yml
     depends_on:
       - app
+    networks:
+      - monitoring
 
   alert-manager:
     image: prom/alertmanager:latest
@@ -31,6 +35,8 @@ services:
       - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
     depends_on:
       - prometheus
+    networks:
+      - monitoring
 
   jaeger:
     image: jaegertracing/all-in-one:latest
@@ -42,6 +48,8 @@ services:
       - COLLECTOR_OTLP_ENABLED=true
       - LOG_LEVEL=debug
       - OTEL_TRACES_SAMPLER=always_off
+    networks:
+      - monitoring
 
   grafana:
     image: grafana/grafana:latest
@@ -56,8 +64,9 @@ services:
       - ./monitoring/grafana/configs/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
       - ./monitoring/grafana/configs/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
       - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    networks:
+        - monitoring
 
 networks:
-  default:
+  monitoring:
     driver: bridge
-    name: monitoring
