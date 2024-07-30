@@ -52,6 +52,17 @@ run: build
 
 clean-and-run: clean run
 
+clean-db:
+	@echo "Cleaning up database ..."
+	@docker	stop postgres >/dev/null 2>&1 || true
+	@docker	rm postgres >/dev/null 2>&1 || true
+
+run-db:
+	@echo "Starting database ..."
+	@docker-compose	up -d postgres >/dev/null 2>&1 || true
+
+clean-and-run-db: clean-db run-db
+
 logs:
 	@docker logs -f app
 

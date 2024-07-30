@@ -4,14 +4,16 @@ import com.schimidt.observability.common.Password;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+
+import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+@NoArgsConstructor // Required by JPA
+@Getter
 @Table(name = "users")
+@NamedEntityGraph(name = "User.addresses", attributeNodes = @NamedAttributeNode("addresses"))
 @Entity
-@NoArgsConstructor
-@ToString
 class User {
 
     @Id
@@ -30,14 +32,24 @@ class User {
     @Column(nullable = false)
     private Password password;
 
-    private User(Long id, String name, String email, Password password) {
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_id"))
+    private Set<Address> addresses;
+
+    private User(Long id, String name, String email, Password password, Set<Address> addresses) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.addresses = addresses;
     }
 
     public static User of(String name, String email, Password password) {
-        return new User(null, name, email, password);
+        return new User(null, name, email, password, Set.of());
+    }
+
+    public static User of(String name, String email, Password password, Set<Address> addresses) {
+        return new User(null, name, email, password, addresses);
     }
 }
+

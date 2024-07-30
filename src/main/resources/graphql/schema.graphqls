@@ -1,0 +1,62 @@
+type Schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    users: [User]
+    userById(id: ID!): User
+}
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    addresses: [Address]
+}
+
+#type Phone {
+#    id: ID!
+#    number: String!
+##    type: PhoneType!
+#}
+
+#enum PhoneType {
+#    HOME
+#    MOBILE
+#    WORK
+#}
+
+type Address {
+    id: ID!
+    street: String!
+    city: String!
+    state: String!
+    zipCode: String!
+    country: String!
+    number: Int!
+}
+
+type Mutation {
+    newUser(user: UserInput!): User
+}
+
+input UserInput {
+    name: String!
+    email: String!
+    rawPassword: String!
+    addresses: [AddressInput!]
+}
+
+input AddressInput {
+    street: String!
+    city: String!
+    state: String!
+    zipCode: String!
+    country: String!
+    number: Int!
+}
+
+
+
+
